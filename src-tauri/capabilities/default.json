@@ -1,0 +1,14 @@
+{
+  "identifier": "default",
+  "description": "Default capability for NevesTools",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "fs:allow-read-file",
+    "fs:allow-write-file",
+    "fs:scope-home-recursive",
+    "fs:scope-document-recursive"
+  ]
+}
