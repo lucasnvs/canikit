@@ -10,7 +10,7 @@ export interface Tool {
 }
 
 /**
- * Registro de todas as ferramentas disponíveis no NevesTools.
+ * Registro de todas as ferramentas disponíveis no CaniKit.
  * Para adicionar uma nova ferramenta:
  * 1. Crie a pasta src/tools/<nome-da-tool>/
  * 2. Implemente o componente principal (ex: MinhaFerramenta.tsx)
@@ -24,6 +24,14 @@ export const TOOLS: Tool[] = [
     route: '/pdf-text-editor',
     description: 'Adicione textos em slides e documentos PDF',
     component: lazy(() => import('./pdf-text-editor/PdfTextEditor')),
+  },
+  {
+    id: 'youtube-downloader',
+    label: 'YouTube Downloader',
+    icon: '▶',
+    route: '/youtube-downloader',
+    description: 'Baixe vídeos e áudios do YouTube com seleção de qualidade',
+    component: lazy(() => import('./youtube-downloader/YoutubeDownloader')),
   },
   // Exemplo de como adicionar mais ferramentas:
   // {

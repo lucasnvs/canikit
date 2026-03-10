@@ -9,6 +9,8 @@
     "fs:allow-read-file",
     "fs:allow-write-file",
     "fs:scope-home-recursive",
-    "fs:scope-document-recursive"
+    "fs:scope-document-recursive",
+    "shell:allow-execute",
+    "shell:allow-spawn"
   ]
 }

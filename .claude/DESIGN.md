@@ -4,51 +4,91 @@ Este documento serve como a única fonte de verdade para a identidade visual e e
 
 ---
 
-## 🎨 1. Identidade Visual (Estilo JetBrains)
-O CaniKit deve transmitir a sensação de uma ferramenta de alta performance, técnica e vibrante.
+## 🎨 1. Identidade Visual
 
-### Paleta de Cores (Hex & Tailwind)
-- **Deep Base (Fundo):** `#000B1A` | `bg-[#000B1A]`
-- **Surface (Cards/Modais):** `#011627` | `bg-[#011627]`
-- **Royal Blue (Primária):** `#0047AB` | `text-[#0047AB]` / `bg-[#0047AB]`
-- **Electric Magenta (Destaque):** `#BC00DD` | `from-[#0047AB] to-[#BC00DD]`
-- **Hot Orange (Alerta/Ação):** `#FF8C00` | `border-[#FF8C00]`
+O CaniKit deve transmitir a sensação de uma ferramenta profissional, focada e eficiente — próximo do estilo de IDEs como VS Code e JetBrains com Dark Gray.
 
-### Gradientes Assinatura
-- **Main Action:** `bg-gradient-to-br from-[#0047AB] via-[#BC00DD] to-[#FF8C00]`
-- **Subtle Glow:** `shadow-[0_0_20px_rgba(188,0,221,0.15)]`
+### Paleta de Cores
 
----
+| Papel             | Hex       | Uso                                      |
+|-------------------|-----------|------------------------------------------|
+| Body Background   | `#282828` | Fundo do corpo da aplicação              |
+| Surface           | `#333333` | Toolbar, titlebar, painéis, cards        |
+| Elevated          | `#3d3d3d` | Inputs, hover de botões, dropdowns       |
+| **Primary Orange**| `#FF8C00` | Botões primários, estados ativos, accent |
+| Blue (efeito)     | `#0047AB` | Gradiente de texto do título, glow sutil |
+| Text              | `#D4D4D4` | Texto principal                          |
+| Text Muted        | `#808080` | Labels, dicas, info secundária           |
+| Border            | `rgba(255,255,255,0.08)` | Bordas neutras em geral      |
+| Border Hover      | `rgba(255,140,0,0.3)`    | Borda ao passar o mouse      |
 
-## 📐 2. Diretrizes de UI (User Interface)
-- **Bordas:** Arredondamento padrão de `rounded-xl` (12px).
-- **Tipografia:** - Interface Geral: Sans-serif geométrica (Inter, Geist ou Roboto).
-  - Dados/Código: Monoespaçada (**JetBrains Mono** é obrigatória para valores numéricos ou outputs).
-- **Glassmorphism:** Em modais, usar `backdrop-blur-md` com fundo `bg-white/5` sobre o Deep Base.
-- **Micro-interações:** Botões devem ter uma transição suave de `scale-95` no clique e um leve brilho no hover.
+### Regras de Gradiente
 
----
-
-## 🧠 3. Princípios de UX (User Experience)
-- **Eficácia "One-Tap":** O usuário deve chegar na ferramenta desejada com no máximo 2 cliques.
-- **Feedback Visual:** Toda ação (ex: "copiar para área de transferência") deve disparar um feedback visual imediato (toast ou mudança de cor do ícone).
-- **Foco em Utilitários:** O layout deve priorizar a área de input/output de dados, sem distrações visuais desnecessárias.
+- **Uso restrito:** Gradientes apenas em texto de título (home) e no ícone/logo.
+- **Proibido:** Gradientes de 3+ cores em botões, cards ou fundos grandes.
+- **Título (texto):** `from #FF8C00 to #D4D4D4` (laranja → branco/cinza)
+- **Logo background:** `#FF8C00` sólido (sem gradiente)
 
 ---
 
-## ⌨️ 4. Padrões de Código (Tailwind / React)
-Sempre que gerar componentes, siga este padrão de estrutura:
+## 📐 2. Diretrizes de UI
 
-```tsx
-// Exemplo de Botão CaniKit
-<button className="px-6 py-2 rounded-xl bg-gradient-to-r from-[#0047AB] to-[#BC00DD] 
-                   hover:brightness-110 transition-all active:scale-95 text-white font-medium 
-                   shadow-lg shadow-blue-900/20">
-  Usar Ferramenta
-</button>
-🛠️ 5. Contexto do Projeto
-Nome: CaniKit
+- **Bordas:** `border-radius: 6px` padrão. Cards da home podem usar `8px`.
+- **Tipografia:**
+  - Interface Geral: `Inter`, `system-ui`, sans-serif
+  - Dados/Código/Números: `JetBrains Mono` obrigatório (zoom, tamanho de fonte, page info)
+- **Botão Primário:** Sólido `#FF8C00`, sem gradiente, `color: #fff`, `font-weight: 600`
+- **Botão Ativo (toolbar):** Background `#FF8C00`, borda transparente, leve `box-shadow` laranja
+- **Hover geral:** `background: #3d3d3d`, `border-color: rgba(255,255,255,0.15)`
+- **Micro-interações:** `transform: scale(0.96)` no clique em botões
 
-Conceito: Canivete Suíço Digital (MicroSaaS).
+---
 
-Público: Desenvolvedores, entusiastas de produtividade e usuários que buscam ferramentas rápidas.
+## 🧠 3. Princípios de UX
+
+- **Eficácia "One-Tap":** Máximo 2 cliques para chegar em qualquer ferramenta.
+- **Feedback Visual:** Toda ação dispara feedback imediato (cor, toast ou ícone).
+- **Foco em Utilitários:** Layout prioriza área de trabalho, sem distrações visuais.
+- **Sem gradientes decorativos:** A cor faz o trabalho — sem efeitos que distraiam.
+
+---
+
+## ⌨️ 4. Padrões de Código (CSS custom props)
+
+```css
+:root {
+  --bg: #282828;
+  --bg-surface: #333333;
+  --bg-elevated: #3d3d3d;
+  --accent: #FF8C00;
+  --accent-blue: #0047AB;
+  --text: #D4D4D4;
+  --text-muted: #808080;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 140, 0, 0.3);
+  --radius: 6px;
+}
+```
+
+```css
+/* Botão primário */
+.btn-primary {
+  background: #FF8C00;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 14px;
+}
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-primary:active { transform: scale(0.96); }
+```
+
+---
+
+## 🛠️ 5. Contexto do Projeto
+
+- **Nome:** CaniKit
+- **Conceito:** Canivete Suíço Digital (MicroSaaS / Desktop App)
+- **Stack:** Tauri + React + TypeScript + CSS custom props (sem Tailwind)
+- **Público:** Desenvolvedores e entusiastas de produtividade

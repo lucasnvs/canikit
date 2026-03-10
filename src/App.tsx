@@ -17,9 +17,13 @@ export default function App() {
             element={
               <Suspense fallback={<div className="loading">Carregando...</div>}>
                 <div className="tool-shell">
-                  <button className="back-btn" onClick={() => navigate('/')}>
-                    ← Voltar
-                  </button>
+                  <div className="tool-titlebar">
+                    <button className="back-btn" onClick={() => navigate('/')}>
+                      ← CaniKit
+                    </button>
+                    <span className="tool-titlebar-sep">/</span>
+                    <span className="tool-titlebar-name">{tool.label}</span>
+                  </div>
                   <tool.component />
                 </div>
               </Suspense>
