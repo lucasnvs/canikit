@@ -1,10 +1,20 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { TOOLS } from './tools/registry'
 import Home from './Home'
 
 export default function App() {
   const navigate = useNavigate()
+
+  // Listen for navigate-to events emitted by the mini window via Rust
+  useEffect(() => {
+    let unlisten: (() => void) | undefined
+    import('@tauri-apps/api/event').then(({ listen }) => {
+      listen<string>('navigate-to', (e) => navigate(e.payload))
+        .then(fn => { unlisten = fn })
+    })
+    return () => { unlisten?.() }
+  }, [])
 
   return (
     <div className="app-shell">

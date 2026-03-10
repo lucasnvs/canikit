@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { invoke } from '@tauri-apps/api/core'
 import { TOOLS } from './tools/registry'
 import Logo from './components/Logo'
 
@@ -20,7 +21,12 @@ export default function Home() {
             <p className="home-subtitle">by Lucas Neves</p>
           </div>
         </div>
-        <span className="home-count">{TOOLS.length} ferramentas</span>
+        <div className="home-header-right">
+          <button className="mini-open-btn" onClick={() => invoke('toggle_overlay')}>
+            ⊞ Overlay
+          </button>
+          <span className="home-count">{TOOLS.length} ferramentas</span>
+        </div>
       </header>
 
       {Object.entries(groups).map(([category, tools]) => (

@@ -12,11 +12,27 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "CaniKit",
         "width": 1280,
         "height": 800,
         "resizable": true,
         "fullscreen": false
+      },
+      {
+        "label": "overlay",
+        "url": "/#/overlay",
+        "title": "CaniKit Overlay",
+        "width": 1920,
+        "height": 1080,
+        "x": 0,
+        "y": 0,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "resizable": false,
+        "skipTaskbar": true,
+        "visible": true
       }
     ],
     "security": {

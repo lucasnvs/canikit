@@ -2,7 +2,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::Serialize;
-use tauri::Emitter;
+use tauri::{
+    menu::{Menu, MenuItem},
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    Emitter, Manager,
+};
+use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
 use tauri_plugin_shell::ShellExt;
 
 #[derive(Clone, Serialize)]
@@ -145,6 +150,36 @@ async fn start_download(
 }
 
 #[tauri::command]
+fn toggle_overlay(app: tauri::AppHandle) {
+    if let Some(win) = app.get_webview_window("overlay") {
+        if win.is_visible().unwrap_or(false) {
+            let _ = win.hide();
+        } else {
+            let _ = win.show();
+        }
+    }
+}
+
+#[tauri::command]
+fn get_cursor_pos(app: tauri::AppHandle) -> (f64, f64) {
+    if let Some(win) = app.get_webview_window("overlay") {
+        if let Ok(pos) = win.cursor_position() {
+            return (pos.x, pos.y);
+        }
+    }
+    (0.0, 0.0)
+}
+
+#[tauri::command]
+fn open_tool_in_main(app: tauri::AppHandle, route: String) {
+    if let Some(win) = app.get_webview_window("main") {
+        let _ = win.show();
+        let _ = win.set_focus();
+        let _ = win.emit("navigate-to", route);
+    }
+}
+
+#[tauri::command]
 async fn pick_download_folder(app: tauri::AppHandle) -> Option<String> {
     use tauri_plugin_dialog::DialogExt;
     app.dialog().file().blocking_pick_folder().map(|p| p.to_string())
@@ -155,7 +190,70 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![start_download, pick_download_folder])
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
+        .invoke_handler(tauri::generate_handler![
+            start_download, pick_download_folder,
+            toggle_overlay, open_tool_in_main, get_cursor_pos,
+        ])
+        .on_window_event(|window, event| {
+            // Hide main window instead of destroying it so the overlay can reopen it
+            if window.label() == "main" {
+                if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
+            }
+        })
+        .setup(|app| {
+            // System tray
+            let open_item = MenuItem::with_id(app, "open", "Abrir CaniKit", true, None::<&str>)?;
+            let quit_item = MenuItem::with_id(app, "quit", "Sair", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&open_item, &quit_item])?;
+
+            TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
+                .menu(&menu)
+                .tooltip("CaniKit")
+                .on_menu_event(|app, event| match event.id.as_ref() {
+                    "open" => {
+                        if let Some(win) = app.get_webview_window("main") {
+                            let _ = win.show();
+                            let _ = win.set_focus();
+                        }
+                    }
+                    "quit" => app.exit(0),
+                    _ => {}
+                })
+                .on_tray_icon_event(|tray, event| {
+                    if let TrayIconEvent::Click {
+                        button: MouseButton::Left,
+                        button_state: MouseButtonState::Up,
+                        ..
+                    } = event
+                    {
+                        let app = tray.app_handle();
+                        if let Some(win) = app.get_webview_window("main") {
+                            let _ = win.show();
+                            let _ = win.set_focus();
+                        }
+                    }
+                })
+                .build(app)?;
+
+            // Ctrl+Shift+O — toggle overlay visibility
+            let shortcut = Shortcut::new(Some(Modifiers::CONTROL | Modifiers::SHIFT), Code::KeyO);
+            app.global_shortcut().on_shortcut(shortcut, move |app, _shortcut, _event| {
+                if let Some(win) = app.get_webview_window("overlay") {
+                    if win.is_visible().unwrap_or(false) {
+                        let _ = win.hide();
+                    } else {
+                        let _ = win.show();
+                        let _ = win.set_focus();
+                    }
+                }
+            })?;
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

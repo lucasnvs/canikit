@@ -1,9 +1,16 @@
-import { lazy, ComponentType } from 'react'
+import { lazy, ComponentType, ReactNode } from 'react'
+import {
+  FileText,
+  Scissors,
+  Youtube,
+  Pipette,
+  ImageDown,
+} from 'lucide-react'
 
 export interface Tool {
   id: string
   label: string
-  icon: string
+  icon: ReactNode
   route: string
   description?: string
   category: string
@@ -21,7 +28,7 @@ export const TOOLS: Tool[] = [
   {
     id: 'pdf-text-editor',
     label: 'PDF Editor de Texto',
-    icon: '📝',
+    icon: <FileText />,
     route: '/pdf-text-editor',
     description: 'Adicione textos em slides e documentos PDF',
     category: 'PDF',
@@ -30,7 +37,7 @@ export const TOOLS: Tool[] = [
   {
     id: 'pdf-splitter',
     label: 'PDF Splitter',
-    icon: '✂️',
+    icon: <Scissors size={20} />,
     route: '/pdf-splitter',
     description: 'Selecione e exporte páginas específicas de um PDF',
     category: 'PDF',
@@ -39,11 +46,29 @@ export const TOOLS: Tool[] = [
   {
     id: 'youtube-downloader',
     label: 'YouTube Downloader',
-    icon: '▶',
+    icon: <Youtube size={20} />,
     route: '/youtube-downloader',
     description: 'Baixe vídeos e áudios do YouTube com seleção de qualidade',
     category: 'Mídia',
     component: lazy(() => import('./youtube-downloader/YoutubeDownloader')),
+  },
+  {
+    id: 'color-picker',
+    label: 'Color Picker',
+    icon: <Pipette size={20} />,
+    route: '/color-picker',
+    description: 'Capture qualquer cor da tela em HEX, RGB ou HSL',
+    category: 'Design',
+    component: lazy(() => import('./color-picker/ColorPicker')),
+  },
+  {
+    id: 'image-to-ico',
+    label: 'Image to ICO',
+    icon: <ImageDown size={20} />,
+    route: '/image-to-ico',
+    description: 'Converta JPG, PNG ou SVG para pacote .ico com todas as resoluções',
+    category: 'Design',
+    component: lazy(() => import('./image-to-ico/ImageToIco')),
   },
   // Exemplo de como adicionar mais ferramentas:
   // {
