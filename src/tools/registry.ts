@@ -6,6 +6,7 @@ export interface Tool {
   icon: string
   route: string
   description?: string
+  category: string
   component: ComponentType
 }
 
@@ -23,15 +24,8 @@ export const TOOLS: Tool[] = [
     icon: '📝',
     route: '/pdf-text-editor',
     description: 'Adicione textos em slides e documentos PDF',
+    category: 'PDF',
     component: lazy(() => import('./pdf-text-editor/PdfTextEditor')),
-  },
-  {
-    id: 'youtube-downloader',
-    label: 'YouTube Downloader',
-    icon: '▶',
-    route: '/youtube-downloader',
-    description: 'Baixe vídeos e áudios do YouTube com seleção de qualidade',
-    component: lazy(() => import('./youtube-downloader/YoutubeDownloader')),
   },
   {
     id: 'pdf-splitter',
@@ -39,7 +33,17 @@ export const TOOLS: Tool[] = [
     icon: '✂️',
     route: '/pdf-splitter',
     description: 'Selecione e exporte páginas específicas de um PDF',
+    category: 'PDF',
     component: lazy(() => import('./pdf-splitter/PdfSplitter')),
+  },
+  {
+    id: 'youtube-downloader',
+    label: 'YouTube Downloader',
+    icon: '▶',
+    route: '/youtube-downloader',
+    description: 'Baixe vídeos e áudios do YouTube com seleção de qualidade',
+    category: 'Mídia',
+    component: lazy(() => import('./youtube-downloader/YoutubeDownloader')),
   },
   // Exemplo de como adicionar mais ferramentas:
   // {
