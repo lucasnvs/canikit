@@ -799,3 +799,197 @@ select:hover,
   font-family: 'JetBrains Mono', monospace;
   word-break: break-word;
 }
+
+/* --- PDF Splitter --- */
+
+.ps-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ps-filename {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ps-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--bg);
+  padding: 16px;
+}
+
+/* Grid view */
+.ps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.ps-grid-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 6px;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--bg-elevated);
+}
+
+.ps-grid-cell:hover {
+  border-color: var(--border);
+}
+
+.ps-grid-cell--selected {
+  border-color: var(--accent) !important;
+  background: rgba(255, 140, 0, 0.06);
+}
+
+.ps-thumb-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.ps-thumb-img {
+  width: 100%;
+  display: block;
+  border-radius: 3px;
+}
+
+.ps-thumb-skeleton {
+  width: 100%;
+  aspect-ratio: 0.707 / 1;
+  background: var(--bg);
+  border-radius: 3px;
+  animation: ps-pulse 1.2s ease-in-out infinite;
+}
+
+.ps-check-overlay {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.ps-page-num {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* List view */
+.ps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 640px;
+}
+
+.ps-list-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ps-list-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.1s;
+  user-select: none;
+}
+
+.ps-list-row:hover {
+  background: var(--bg-elevated);
+}
+
+.ps-list-row--selected {
+  background: rgba(255, 140, 0, 0.08);
+  border-color: rgba(255, 140, 0, 0.2);
+}
+
+.ps-list-thumb {
+  width: 40px;
+  height: auto;
+  border-radius: 2px;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.ps-list-page-num {
+  font-size: 13px;
+  color: var(--text);
+  flex: 1;
+}
+
+/* Range input */
+.ps-range-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ps-range-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.ps-range-input {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3px 8px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  width: 160px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.ps-range-input:focus {
+  border-color: var(--accent);
+}
+
+/* Export badge */
+.ps-export-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+
+@keyframes ps-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.85; }
+}

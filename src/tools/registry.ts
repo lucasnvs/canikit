@@ -33,6 +33,14 @@ export const TOOLS: Tool[] = [
     description: 'Baixe vídeos e áudios do YouTube com seleção de qualidade',
     component: lazy(() => import('./youtube-downloader/YoutubeDownloader')),
   },
+  {
+    id: 'pdf-splitter',
+    label: 'PDF Splitter',
+    icon: '✂️',
+    route: '/pdf-splitter',
+    description: 'Selecione e exporte páginas específicas de um PDF',
+    component: lazy(() => import('./pdf-splitter/PdfSplitter')),
+  },
   // Exemplo de como adicionar mais ferramentas:
   // {
   //   id: 'image-converter',
