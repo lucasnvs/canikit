@@ -5,7 +5,7 @@ import { marked } from 'marked'
 import { TOOLS } from '../tools/registry'
 import { useTodoList } from '../mini/useTodoList'
 
-const BAR_W = 460
+const BAR_W = 240
 const BAR_H = 64
 const PANEL_H = 300
 const PIT_W = 260
@@ -120,11 +120,12 @@ export default function OverlayApp() {
 
   // Keyboard shortcuts
   useEffect(() => {
+    const overlayTools = TOOLS.filter(t => t.overlay)
     function onKeyDown(e: KeyboardEvent) {
       if (document.activeElement === inputRef.current) return
       const idx = parseInt(e.key, 10)
-      if (!isNaN(idx) && idx >= 1 && idx <= TOOLS.length) {
-        invoke('open_tool_in_main', { route: TOOLS[idx - 1].route })
+      if (!isNaN(idx) && idx >= 1 && idx <= overlayTools.length) {
+        invoke('open_tool_in_main', { route: overlayTools[idx - 1].route })
       }
     }
     window.addEventListener('keydown', onKeyDown)
@@ -183,10 +184,10 @@ export default function OverlayApp() {
       >
         <div className="overlay-strip overlay-glass">
           <div className="overlay-drag" onMouseDown={onBarDragStart}>
-            <img src="/icon.png" className="overlay-app-icon" alt="NevesTools" draggable={false} />
+            <img src="/icon.png" className="overlay-app-icon" alt="CaniKit" draggable={false} />
           </div>
 
-          {TOOLS.map((tool, i) => (
+          {TOOLS.filter(t => t.overlay).map((tool, i) => (
             <button
               key={tool.id}
               className="overlay-tool-btn"

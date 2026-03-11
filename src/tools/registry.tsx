@@ -15,6 +15,7 @@ export interface Tool {
   route: string
   description?: string
   category: string
+  overlay?: boolean
   component: ComponentType
 }
 
@@ -60,6 +61,7 @@ export const TOOLS: Tool[] = [
     route: '/color-picker',
     description: 'Capture qualquer cor da tela em HEX, RGB ou HSL',
     category: 'Design',
+    overlay: true,
     component: lazy(() => import('./color-picker/ColorPicker')),
   },
   {
@@ -78,6 +80,7 @@ export const TOOLS: Tool[] = [
     route: '/write-it',
     description: 'Notas em markdown organizadas por disciplina',
     category: 'Estudo',
+    overlay: true,
     component: lazy(() => import('./write-it/WriteIt')),
   },
   // Exemplo de como adicionar mais ferramentas:

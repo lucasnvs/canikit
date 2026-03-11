@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { readTextFile, writeTextFile, mkdir } from '@tauri-apps/plugin-fs'
+import { appLocalDataDir, join } from '@tauri-apps/api/path'
 
 export interface Note {
   id: string
@@ -9,40 +11,54 @@ export interface Note {
   updatedAt: number
 }
 
-const STORAGE_KEY = 'nevestools-notes'
-const CATEGORIES_KEY = 'nevestools-note-categories'
-
 export const DEFAULT_CATEGORIES = ['Português', 'Matemática', 'Programação', 'Geral']
 
-function loadNotes(): Note[] {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
-  } catch {
-    return []
+interface Paths {
+  notes: string
+  categories: string
+}
+
+async function initPaths(): Promise<Paths> {
+  const base = await appLocalDataDir()
+  const dir = await join(base, 'writeit')
+  await mkdir(dir, { recursive: true })
+  return {
+    notes: await join(dir, 'notes.json'),
+    categories: await join(dir, 'categories.json'),
   }
 }
 
-function loadCategories(): string[] {
+async function readJson<T>(path: string, fallback: T): Promise<T> {
   try {
-    const stored = localStorage.getItem(CATEGORIES_KEY)
-    return stored ? JSON.parse(stored) : DEFAULT_CATEGORIES
+    return JSON.parse(await readTextFile(path)) as T
   } catch {
-    return DEFAULT_CATEGORIES
+    return fallback
   }
 }
 
 export function useNotes() {
-  const [notes, setNotes] = useState<Note[]>(loadNotes)
-  const [categories, setCategories] = useState<string[]>(loadCategories)
+  const [notes, setNotes] = useState<Note[]>([])
+  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES)
+  const pathsRef = useRef<Paths | null>(null)
+
+  useEffect(() => {
+    initPaths().then(async paths => {
+      pathsRef.current = paths
+      setNotes(await readJson<Note[]>(paths.notes, []))
+      setCategories(await readJson<string[]>(paths.categories, DEFAULT_CATEGORIES))
+    })
+  }, [])
 
   function saveNotes(next: Note[]) {
     setNotes(next)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    const p = pathsRef.current
+    if (p) writeTextFile(p.notes, JSON.stringify(next)).catch(() => {})
   }
 
   function saveCategories(next: string[]) {
     setCategories(next)
-    localStorage.setItem(CATEGORIES_KEY, JSON.stringify(next))
+    const p = pathsRef.current
+    if (p) writeTextFile(p.categories, JSON.stringify(next)).catch(() => {})
   }
 
   function createNote(category: string): Note {
@@ -73,10 +89,8 @@ export function useNotes() {
   }
 
   function removeCategory(name: string) {
-    // Move orphaned notes to 'Geral'
     const fallback = categories.find(c => c !== name) ?? 'Geral'
-    const updatedNotes = notes.map(n => n.category === name ? { ...n, category: fallback } : n)
-    saveNotes(updatedNotes)
+    saveNotes(notes.map(n => n.category === name ? { ...n, category: fallback } : n))
     saveCategories(categories.filter(c => c !== name))
   }
 

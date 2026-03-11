@@ -19,10 +19,6 @@ const FORMAT_OPTIONS: { value: Format; label: string }[] = [
   { value: 'wav', label: 'WAV' },
 ]
 
-const DEFAULT_FOLDER =
-  (typeof window !== 'undefined' && (window as any).__TAURI_INTERNALS__)
-    ? ''
-    : ''
 
 export default function YoutubeDownloader() {
   const [urlsText, setUrlsText] = useState('')
@@ -34,15 +30,6 @@ export default function YoutubeDownloader() {
   const jobsRef = useRef<DownloadJob[]>([])
   jobsRef.current = jobs
 
-  // Resolve default downloads folder on mount
-  useEffect(() => {
-    invoke<string>('pick_download_folder').catch(() => {})
-    // Set a sensible default (user's Downloads)
-    const home = (window as any).__TAURI_INTERNALS__
-      ? ''
-      : ''
-    setOutputDir(home)
-  }, [])
 
   // Listen to backend events
   useEffect(() => {

@@ -1,12 +1,12 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "NevesTools",
+  "productName": "CaniKit",
   "version": "0.1.0",
-  "identifier": "com.nevestools.app",
+  "identifier": "com.canikit",
   "build": {
     "beforeDevCommand": "",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "",
     "frontendDist": "../dist"
   },
   "app": {

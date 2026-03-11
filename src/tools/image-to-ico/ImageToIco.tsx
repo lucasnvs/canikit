@@ -29,7 +29,7 @@ export default function ImageToIco() {
 
     try {
       const img = await loadImageElement(file.bytes, file.mimeType)
-      const url = URL.createObjectURL(new Blob([file.bytes], { type: file.mimeType }))
+      const url = URL.createObjectURL(new Blob([file.bytes.buffer as ArrayBuffer], { type: file.mimeType }))
       const prevs = await generatePreviews(img)
 
       setImgFile(file)
