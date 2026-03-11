@@ -160,6 +160,31 @@ fn toggle_overlay(app: tauri::AppHandle) {
     }
 }
 
+/// Returns the Windows work area (usable screen excluding taskbar) in physical pixels.
+/// Falls back to (0, 0, 1920, 1080) on non-Windows.
+#[tauri::command]
+fn get_work_area() -> (i32, i32, i32, i32) {
+    #[cfg(target_os = "windows")]
+    {
+        #[repr(C)]
+        #[derive(Default)]
+        struct Rect { left: i32, top: i32, right: i32, bottom: i32 }
+
+        extern "system" {
+            fn SystemParametersInfoW(
+                action: u32, param: u32,
+                pv: *mut std::ffi::c_void, ini: u32,
+            ) -> i32;
+        }
+
+        let mut r = Rect::default();
+        unsafe { SystemParametersInfoW(0x0030, 0, &mut r as *mut Rect as _, 0); }
+        (r.left, r.top, r.right - r.left, r.bottom - r.top)
+    }
+    #[cfg(not(target_os = "windows"))]
+    { (0, 0, 1920, 1080) }
+}
+
 #[tauri::command]
 fn get_cursor_pos(app: tauri::AppHandle) -> (f64, f64) {
     if let Some(win) = app.get_webview_window("overlay") {
@@ -217,7 +242,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             start_download, pick_download_folder,
             toggle_overlay, open_tool_in_main, get_cursor_pos,
-            create_postit,
+            get_work_area, create_postit,
         ])
         .on_window_event(|window, event| {
             // Hide main window instead of destroying it so the overlay can reopen it

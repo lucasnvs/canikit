@@ -50,10 +50,11 @@ export default function OverlayApp() {
       const monitor = await primaryMonitor()
       if (monitor) {
         scaleRef.current = monitor.scaleFactor
-        const w = monitor.size.width / monitor.scaleFactor
-        const h = monitor.size.height / monitor.scaleFactor
-        await win.setSize(new LogicalSize(w, h))
-        await win.setPosition(new LogicalPosition(0, 0))
+        const scale = monitor.scaleFactor
+        // Use work area (screen minus taskbar) so the overlay doesn't sit above the taskbar
+        const [wx, wy, ww, wh] = await invoke<[number, number, number, number]>('get_work_area')
+        await win.setSize(new LogicalSize(ww / scale, wh / scale))
+        await win.setPosition(new LogicalPosition(wx / scale, wy / scale))
       }
     }
     init()
