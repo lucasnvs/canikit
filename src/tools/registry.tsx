@@ -5,6 +5,7 @@ import {
   Youtube,
   Pipette,
   ImageDown,
+  NotebookPen,
 } from 'lucide-react'
 
 export interface Tool {
@@ -69,6 +70,15 @@ export const TOOLS: Tool[] = [
     description: 'Converta JPG, PNG ou SVG para pacote .ico com todas as resoluções',
     category: 'Design',
     component: lazy(() => import('./image-to-ico/ImageToIco')),
+  },
+  {
+    id: 'write-it',
+    label: 'WriteIt',
+    icon: <NotebookPen size={20} />,
+    route: '/write-it',
+    description: 'Notas em markdown organizadas por disciplina',
+    category: 'Estudo',
+    component: lazy(() => import('./write-it/WriteIt')),
   },
   // Exemplo de como adicionar mais ferramentas:
   // {

@@ -2,6 +2,7 @@ import { Suspense, useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { TOOLS } from './tools/registry'
 import Home from './Home'
+import PostItWindow from './tools/postit/PostItWindow'
 
 export default function App() {
   const navigate = useNavigate()
@@ -40,6 +41,7 @@ export default function App() {
             }
           />
         ))}
+        <Route path="/postit" element={<PostItWindow />} />
       </Routes>
     </div>
   )

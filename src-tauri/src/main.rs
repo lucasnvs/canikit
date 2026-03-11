@@ -180,6 +180,29 @@ fn open_tool_in_main(app: tauri::AppHandle, route: String) {
 }
 
 #[tauri::command]
+fn create_postit(app: tauri::AppHandle, label: String) -> Result<(), String> {
+    use tauri::{WebviewUrl, WebviewWindowBuilder};
+
+    if let Some(w) = app.get_webview_window(&label) {
+        let _ = w.set_focus();
+        return Ok(());
+    }
+
+    WebviewWindowBuilder::new(&app, &label, WebviewUrl::App("/#/postit".into()))
+        .title("")
+        .inner_size(300.0, 220.0)
+        .decorations(false)
+        .transparent(true)
+        .always_on_top(true)
+        .resizable(false)
+        .skip_taskbar(true)
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+#[tauri::command]
 async fn pick_download_folder(app: tauri::AppHandle) -> Option<String> {
     use tauri_plugin_dialog::DialogExt;
     app.dialog().file().blocking_pick_folder().map(|p| p.to_string())
@@ -194,6 +217,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             start_download, pick_download_folder,
             toggle_overlay, open_tool_in_main, get_cursor_pos,
+            create_postit,
         ])
         .on_window_event(|window, event| {
             // Hide main window instead of destroying it so the overlay can reopen it
